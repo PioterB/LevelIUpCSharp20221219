@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using LevelUpCSharp.Production.Ingredients;
 using LevelUpCSharp.Products;
 
 namespace LevelUpCSharp.Production
@@ -96,8 +97,24 @@ namespace LevelUpCSharp.Production
             };
         }
 
+
+
+
+
+
+
+
         private Sandwich ProduceSandwich(SandwichKind kind, DateTimeOffset addMinutes)
         {
+            return SandwichArtist
+                .WithButter(true)
+                .Use(new Beef())
+                .AddVeg(new Cheese())
+                .AddVeg(new Cheese())
+                .AddVeg(new Olives())
+                .AddTopping(new GarlicSos())
+                .Wrap();
+
             return new Sandwich(kind, addMinutes);
         }
     }
