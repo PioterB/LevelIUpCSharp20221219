@@ -8,12 +8,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace LevelUpCSharp.Domain.Tests
 {
     [TestClass]
-    public class VendingMachineTests
+    public class ShelfTests
     {
         [TestMethod]
         public void Has_EmptyMachine_False()
         {
-            var unitUnderTest = new VendingMachine();
+            var unitUnderTest = new Shelf();
 
             var has = unitUnderTest.Has(SandwichKind.Beef);
 
@@ -23,7 +23,7 @@ namespace LevelUpCSharp.Domain.Tests
         [TestMethod]
         public void Has_NoRequestedKind_False()
         {
-            var unitUnderTest = new VendingMachine();
+            var unitUnderTest = new Shelf();
             unitUnderTest.Put(new Sandwich(SandwichKind.Cheese, DateTimeOffset.Now.AddDays(1)));
 
             var has = unitUnderTest.Has(SandwichKind.Beef);
@@ -34,7 +34,7 @@ namespace LevelUpCSharp.Domain.Tests
         [TestMethod]
         public void Has_WithRequestedKind_False()
         {
-            var unitUnderTest = new VendingMachine();
+            var unitUnderTest = new Shelf();
             unitUnderTest.Put(new Sandwich(SandwichKind.Beef, DateTimeOffset.Now.AddDays(1)));
 
             var has = unitUnderTest.Has(SandwichKind.Beef);
@@ -45,7 +45,7 @@ namespace LevelUpCSharp.Domain.Tests
         [TestMethod]
         public void Put_Sandwich_Added()
         {
-            var unitUnderTest = new VendingMachine();
+            var unitUnderTest = new Shelf();
             var sandwich = new Sandwich(SandwichKind.Beef, DateTimeOffset.Now.AddDays(1));
             
             unitUnderTest.Put(sandwich);

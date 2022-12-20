@@ -3,7 +3,7 @@ using LevelUpCSharp.Products;
 
 namespace LevelUpCSharp.Retail
 {
-    public interface IVendingMachine : IEnumerable<Sandwich>
+    public interface IShelf : IEnumerable<Sandwich>
     {
         void Put(Sandwich item);
 

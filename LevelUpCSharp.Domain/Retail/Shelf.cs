@@ -7,11 +7,11 @@ using LevelUpCSharp.Products;
 
 namespace LevelUpCSharp.Retail
 {
-    public class VendingMachine : IVendingMachine
+    public class Shelf : IShelf
     {
         private readonly IDictionary<SandwichKind, Queue<Sandwich>> _lines;
 
-        public VendingMachine()
+        public Shelf()
         {
             _lines = InitializeLines();
         }

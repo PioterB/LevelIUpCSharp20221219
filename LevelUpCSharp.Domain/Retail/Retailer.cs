@@ -8,15 +8,15 @@ namespace LevelUpCSharp.Retail
     public class Retailer
     {
         private static Retailer _instance;
-        private readonly IVendingMachine _storage;
+        private readonly IShelf _shelf;
 
-        protected Retailer(string name, IVendingMachine storage)
+        protected Retailer(string name, IShelf shelf)
         {
             Name = name;
-            _storage = storage;
+            _shelf = shelf;
         }
 
-        public static Retailer Instance => _instance ?? (_instance = new Retailer("Build-in", new VendingMachine()));
+        public static Retailer Instance => _instance ?? (_instance = new Retailer("Build-in", new Shelf()));
 
         public event Action<PackingSummary> Packed;
         public event Action<DateTimeOffset, Sandwich> Purchase;
@@ -25,7 +25,7 @@ namespace LevelUpCSharp.Retail
 
         public Result<Sandwich> Sell(SandwichKind kind)
         {
-            var result = _storage.Take(kind);
+            var result = _shelf.Take(kind);
             if (result.Fail)
             {
                 return Result<Sandwich>.Failed();
@@ -38,7 +38,7 @@ namespace LevelUpCSharp.Retail
         {
             package = package.ToArray();
 
-            _storage.Put(package);
+            _shelf.Put(package);
 
             var summary = ComputeReport(package, deliver);
             OnPacked(summary);
