@@ -96,14 +96,7 @@ namespace LevelUpCSharp.Production
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
         }
-
-
-
-
-
-
-
-
+        
         private Sandwich ProduceSandwich(SandwichKind kind, DateTimeOffset addMinutes)
         {
             return SandwichArtist
@@ -114,8 +107,6 @@ namespace LevelUpCSharp.Production
                 .AddVeg(new Olives())
                 .AddTopping(new GarlicSos())
                 .Wrap();
-
-            return new Sandwich(kind, addMinutes);
         }
     }
 }
