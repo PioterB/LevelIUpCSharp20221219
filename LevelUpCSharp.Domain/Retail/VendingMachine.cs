@@ -1,15 +1,27 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using LevelUpCSharp.Helpers;
+using LevelUpCSharp.Products;
 
 namespace LevelUpCSharp.Retail
 {
-    internal class VendingMachine<TType, TKind> : IVendingMachine<TType, TKind>
+    public class VendingMachine : IVendingMachine
     {
-        public IEnumerator<TType> GetEnumerator()
+        private readonly IDictionary<SandwichKind, Queue<Sandwich>> _lines;
+
+        public VendingMachine()
         {
-            throw new NotImplementedException();
+            _lines = InitializeLines();
+        }
+
+        public IEnumerator<Sandwich> GetEnumerator()
+        {
+            return _lines.Values
+                .SelectMany(sandwiches => sandwiches)
+                .ToList()
+                .GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -17,14 +29,45 @@ namespace LevelUpCSharp.Retail
             return GetEnumerator();
         }
 
-        public void Put(TType item)
+        public void Put(Sandwich item)
         {
-            throw new NotImplementedException();
+            _lines[item.Kind].Enqueue(item);
         }
 
-        public TType Take(TKind kind)
+        public Result<Sandwich> Take(SandwichKind kind)
         {
-            throw new NotImplementedException();
+            var dontHave = !HasImpl(kind);
+
+            if (dontHave)
+            {
+                return Result<Sandwich>.Failed();
+            }
+
+            var sandwich = _lines[kind].Dequeue();
+
+            return Result<Sandwich>.Success(sandwich);
+        }
+
+        public bool Has(SandwichKind kind)
+        {
+            return !HasImpl(kind);
+        }
+
+        private bool HasImpl(SandwichKind kind)
+        {
+            return _lines.ContainsKey(kind) && _lines[kind].Count > 0;
+        }
+
+        private IDictionary<SandwichKind, Queue<Sandwich>> InitializeLines()
+        {
+            var result = new Dictionary<SandwichKind, Queue<Sandwich>>();
+
+            foreach (var sandwichKind in EnumHelper.GetValues<SandwichKind>())
+            {
+                result.Add(sandwichKind, new Queue<Sandwich>());
+            }
+
+            return result;
         }
     }
 }

@@ -7,7 +7,7 @@ namespace LevelUpCSharp.Retail
     {
         void Put(Sandwich item);
 
-        Sandwich Take(SandwichKind kind);
+        Result<Sandwich> Take(SandwichKind kind);
 
         bool Has(SandwichKind kind);
     }

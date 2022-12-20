@@ -24,16 +24,13 @@ namespace LevelUpCSharp.Retail
 
         public Result<Sandwich> Sell(SandwichKind kind)
         {
-            var notExist = !_storage.Has(kind);
-            
-            if (notExist)
+            var result = _storage.Take(kind);
+            if (result.Fail)
             {
                 return Result<Sandwich>.Failed();
             }
-
-            var sandwich = _storage.Take(kind);
-            OnPurchase(DateTimeOffset.Now, sandwich);
-            return Result<Sandwich>.Success(sandwich);
+            OnPurchase(DateTimeOffset.Now, result.Value);
+            return Result<Sandwich>.Success(result.Value);
         }
 
         public void Pack(IEnumerable<Sandwich> package, string deliver)
