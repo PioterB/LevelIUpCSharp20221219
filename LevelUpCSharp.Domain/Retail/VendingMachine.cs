@@ -50,7 +50,7 @@ namespace LevelUpCSharp.Retail
 
         public bool Has(SandwichKind kind)
         {
-            return !HasImpl(kind);
+            return HasImpl(kind);
         }
 
         private bool HasImpl(SandwichKind kind)
