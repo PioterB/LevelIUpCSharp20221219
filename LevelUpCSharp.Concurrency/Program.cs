@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Threading;
+using LevelUpCSharp.Storage.Safe;
 
-namespace LevelUpCSharp.Concurrency
+namespace LevelUpCSharp
 {
     class Program
     {
         private static Random r = new Random();
-
-        private static SemaphoreSlim _in = new SemaphoreSlim(1);
-        private static SemaphoreSlim _out = new SemaphoreSlim(0);
 
         static void Main(string[] args)
         {
@@ -30,14 +28,12 @@ namespace LevelUpCSharp.Concurrency
             while (true)
             {
                 var found = r.Next(100);
-                Console.WriteLine("[B] i have: " + found);
+                Console.WriteLine("[Insert] i have: " + found);
 
-                _in.Wait();
                 vault.Put(found);
-                _out.Release();
-                Console.WriteLine("[B] stored: " + found);
+                Console.WriteLine("[Insert] stored: " + found);
 
-                Console.WriteLine("[B] break");
+                Console.WriteLine("[Insert] break");
                 Thread.Sleep(3 * 1000);
                 
             }
@@ -49,13 +45,11 @@ namespace LevelUpCSharp.Concurrency
 
             while (true)
             {
-                Console.WriteLine("[A] ready to pickup");
+                Console.WriteLine("[Pickup] ready to pickup");
 
-                _out.Wait();
                 var found = vault.Get();
-                _in.Release();
 
-                Console.WriteLine("[A] get:" + found);
+                Console.WriteLine("[Pickup] get:" + found);
                 Thread.Sleep(7 * 1000);
             }
         }

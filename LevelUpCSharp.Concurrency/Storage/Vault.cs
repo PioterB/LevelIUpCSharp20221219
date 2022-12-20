@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace LevelUpCSharp.Concurrency
+﻿namespace LevelUpCSharp.Storage
 {
-    public class Vault<TSecret>
+    public class Vault<TSecret> : IVault<TSecret>
     {
         private TSecret _secret;
 
