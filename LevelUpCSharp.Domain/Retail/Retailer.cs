@@ -10,13 +10,13 @@ namespace LevelUpCSharp.Retail
         private static Retailer _instance;
         private readonly IVendingMachine _storage;
 
-        protected Retailer(string name)
+        protected Retailer(string name, IVendingMachine storage)
         {
             Name = name;
-            _storage = new VendingMachine();
+            _storage = storage;
         }
 
-        public static Retailer Instance => _instance ?? (_instance = new Retailer("Build-in"));
+        public static Retailer Instance => _instance ?? (_instance = new Retailer("Build-in", new VendingMachine()));
 
         public event Action<PackingSummary> Packed;
         public event Action<DateTimeOffset, Sandwich> Purchase;
