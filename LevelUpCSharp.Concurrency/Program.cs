@@ -29,16 +29,21 @@ namespace LevelUpCSharp.Concurrency
                 var found = r.Next(100);
 
                 Console.WriteLine("[B] i have: " + found);
-                vault.Put(found);
-                Console.WriteLine("[B] stored: " + found);
 
-                Console.WriteLine("[B] break");
-                Thread.Sleep(3*1000);
-                Console.WriteLine("[B] after break");
+                lock (vault)
+                {
+                    vault.Put(found);
+                    Console.WriteLine("[B] stored: " + found);
+
+                    Console.WriteLine("[B] break");
+                    Thread.Sleep(3 * 1000);
+                    Console.WriteLine("[B] after break");
 
 
-                var get = vault.Get();
-                Console.WriteLine("[B] get:" + get);
+                    found = vault.Get();
+                }
+                
+                Console.WriteLine("[B] get:" + found);
 
                 Thread.Sleep(3 * 1000);
             }
@@ -53,17 +58,20 @@ namespace LevelUpCSharp.Concurrency
                 var found = r.Next(100);
 
                 Console.WriteLine("[A] i have: " + found);
-                vault.Put(found);
-                Console.WriteLine("[A] stored: " + found);
-
-                Console.WriteLine("[A] break");
-                Thread.Sleep(7 * 1000);
-                Console.WriteLine("[A] after break");
                 
+                lock (vault)
+                {
+                    vault.Put(found);
+                    Console.WriteLine("[A] stored: " + found);
 
-                var get = vault.Get();
-                Console.WriteLine("[A] get:" + get);
+                    Console.WriteLine("[A] break");
+                    Thread.Sleep(7 * 1000);
+                    Console.WriteLine("[A] after break");
 
+                    found = vault.Get();
+                }
+
+                Console.WriteLine("[A] get:" + found);
                 Thread.Sleep(7 * 1000);
             }
         }
