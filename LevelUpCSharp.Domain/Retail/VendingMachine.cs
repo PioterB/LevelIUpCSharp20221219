@@ -34,6 +34,14 @@ namespace LevelUpCSharp.Retail
             _lines[item.Kind].Enqueue(item);
         }
 
+        public void Put(IEnumerable<Sandwich> package)
+        {
+            foreach (var item in package)
+            {
+                _lines[item.Kind].Enqueue(item);
+            }
+        }
+
         public Result<Sandwich> Take(SandwichKind kind)
         {
             var dontHave = !HasImpl(kind);

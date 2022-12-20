@@ -38,8 +38,8 @@ namespace LevelUpCSharp.Retail
         {
             package = package.ToArray();
 
-            PopulateMachine(package);
-            
+            _storage.Put(package);
+
             var summary = ComputeReport(package, deliver);
             OnPacked(summary);
         }
@@ -52,14 +52,6 @@ namespace LevelUpCSharp.Retail
         protected virtual void OnPurchase(DateTimeOffset time, Sandwich product)
         {
             Purchase?.Invoke(time, product);
-        }
-
-        private void PopulateMachine(IEnumerable<Sandwich> package)
-        {
-            foreach (var sandwich in package)
-            {
-                _storage.Put(sandwich);
-            }
         }
 
         private static PackingSummary ComputeReport(IEnumerable<Sandwich> package, string deliver)
