@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using LevelUpCSharp.Helpers;
 using LevelUpCSharp.Products;
 
 namespace LevelUpCSharp.Retail
@@ -10,12 +7,12 @@ namespace LevelUpCSharp.Retail
     public class Retailer
     {
         private static Retailer _instance;
-        private readonly IDictionary<SandwichKind, Queue<Sandwich>> _lines;
+        private readonly IVendingMachine _storage;
 
         protected Retailer(string name)
         {
             Name = name;
-            _lines = InitializeLines();
+            _storage = new VendingMachine();
         }
 
         public static Retailer Instance => _instance ?? (_instance = new Retailer("Build-in"));
@@ -27,12 +24,14 @@ namespace LevelUpCSharp.Retail
 
         public Result<Sandwich> Sell(SandwichKind kind)
         {
-            if (_lines.ContainsKey(kind) == false || _lines[kind].Count == 0)
+            var notExist = !_storage.Has(kind);
+            
+            if (notExist)
             {
                 return Result<Sandwich>.Failed();
             }
 
-            var sandwich = _lines[kind].Dequeue();
+            var sandwich = _storage.Take(kind);
             OnPurchase(DateTimeOffset.Now, sandwich);
             return Result<Sandwich>.Success(sandwich);
         }
@@ -44,7 +43,7 @@ namespace LevelUpCSharp.Retail
             Dictionary<SandwichKind, int> sums = new Dictionary<SandwichKind, int>();
             foreach (var sandwich in package)
             {
-                _lines[sandwich.Kind].Enqueue(sandwich);
+                _storage.Put(sandwich);
 
                 if (sums.ContainsKey(sandwich.Kind) == false)
                 {
@@ -73,18 +72,6 @@ namespace LevelUpCSharp.Retail
         protected virtual void OnPurchase(DateTimeOffset time, Sandwich product)
         {
             Purchase?.Invoke(time, product);
-        }
-
-        private IDictionary<SandwichKind, Queue<Sandwich>> InitializeLines()
-        {
-            var result = new Dictionary<SandwichKind, Queue<Sandwich>>();
-
-            foreach (var sandwichKind in EnumHelper.GetValues<SandwichKind>())
-            {
-                result.Add(sandwichKind, new Queue<Sandwich>());
-            }
-
-            return result;
         }
     }
 }
