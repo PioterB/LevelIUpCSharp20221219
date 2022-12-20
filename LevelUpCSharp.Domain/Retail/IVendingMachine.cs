@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
+using LevelUpCSharp.Products;
 
 namespace LevelUpCSharp.Retail
 {
-    public interface IVendingMachine<TType, in TKind>: IEnumerable<TType>
+    public interface IVendingMachine : IEnumerable<Sandwich>
     {
-        void Put(TType item);
+        void Put(Sandwich item);
 
-        TType Take(TKind kind);
+        Sandwich Take(SandwichKind kind);
+
+        bool Has(SandwichKind kind);
     }
 }
