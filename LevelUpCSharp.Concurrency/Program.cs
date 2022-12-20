@@ -7,69 +7,53 @@ namespace LevelUpCSharp.Concurrency
     {
         private static Random r = new Random();
 
+        private static SemaphoreSlim _in = new SemaphoreSlim(1);
+        private static SemaphoreSlim _out = new SemaphoreSlim(0);
+
         static void Main(string[] args)
         {
-            var a = new Thread(WorkA);
-            var b = new Thread(WorkB);
+            var courier = new Thread(Pickup);
+            var sender = new Thread(Insert);
             var vault = new Vault<int>();
 
-            a.Start(vault);
-            b.Start(vault);
+            courier.Start(vault);
+            sender.Start(vault);
 
             Console.ReadKey(true);
             Console.WriteLine("Closing...");
         }
 
-        private static void WorkB(object? obj)
+        private static void Insert(object? obj)
         {
             var vault = (Vault<int>)obj;
 
             while (true)
             {
                 var found = r.Next(100);
-
                 Console.WriteLine("[B] i have: " + found);
 
-                lock (vault)
-                {
-                    vault.Put(found);
-                    Console.WriteLine("[B] stored: " + found);
+                _in.Wait();
+                vault.Put(found);
+                _out.Release();
+                Console.WriteLine("[B] stored: " + found);
 
-                    Console.WriteLine("[B] break");
-                    Thread.Sleep(3 * 1000);
-                    Console.WriteLine("[B] after break");
-
-
-                    found = vault.Get();
-                }
-                
-                Console.WriteLine("[B] get:" + found);
-
+                Console.WriteLine("[B] break");
                 Thread.Sleep(3 * 1000);
+                
             }
         }
 
-        private static void WorkA(object? obj)
+        private static void Pickup(object? obj)
         {
             var vault = (Vault<int>)obj;
 
             while (true)
             {
-                var found = r.Next(100);
+                Console.WriteLine("[A] ready to pickup");
 
-                Console.WriteLine("[A] i have: " + found);
-                
-                lock (vault)
-                {
-                    vault.Put(found);
-                    Console.WriteLine("[A] stored: " + found);
-
-                    Console.WriteLine("[A] break");
-                    Thread.Sleep(7 * 1000);
-                    Console.WriteLine("[A] after break");
-
-                    found = vault.Get();
-                }
+                _out.Wait();
+                var found = vault.Get();
+                _in.Release();
 
                 Console.WriteLine("[A] get:" + found);
                 Thread.Sleep(7 * 1000);
