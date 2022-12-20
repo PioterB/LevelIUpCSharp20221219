@@ -16,13 +16,8 @@ namespace LevelUpCSharp.Linq.Queries
 			// arrange
 			IEnumerable<object> allItems = new[] { new Employee(), new Employee(), new Person() };
 
-			// act, refactor the code so that Linq is used to get a list of persons
-			IList<Person> allPersons = new List<Person>();
-			foreach (Object obj in allItems)
-			{
-				allPersons.Add((Person)obj);
+			IList<Person> allPersons = allItems.Cast<Person>().ToList();
 
-			}
 			Assert.Fail("refactor the code so that Linq is used to get a list of persons");
 
 			// assert
