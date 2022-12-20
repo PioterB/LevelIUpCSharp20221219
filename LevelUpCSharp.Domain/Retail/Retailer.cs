@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using LevelUpCSharp.Products;
 
 namespace LevelUpCSharp.Retail
@@ -35,29 +36,11 @@ namespace LevelUpCSharp.Retail
 
         public void Pack(IEnumerable<Sandwich> package, string deliver)
         {
-            /* use linq to create summary, see constructor for expectations */
+            package = package.ToArray();
 
-            Dictionary<SandwichKind, int> sums = new Dictionary<SandwichKind, int>();
-            foreach (var sandwich in package)
-            {
-                _storage.Put(sandwich);
-
-                if (sums.ContainsKey(sandwich.Kind) == false)
-                {
-                    sums.Add(sandwich.Kind, 0);
-                }
-
-                sums[sandwich.Kind]++;
-            }
-
-            var summaryPositions = new List<LineSummary>();
-
-            foreach (var pair in sums)
-            {
-                summaryPositions.Add(new LineSummary(pair.Key, pair.Value));
-            }
-
-            var summary = new PackingSummary(summaryPositions, deliver);
+            PopulateMachine(package);
+            
+            var summary = ComputeReport(package, deliver);
             OnPacked(summary);
         }
 
@@ -69,6 +52,26 @@ namespace LevelUpCSharp.Retail
         protected virtual void OnPurchase(DateTimeOffset time, Sandwich product)
         {
             Purchase?.Invoke(time, product);
+        }
+
+        private void PopulateMachine(IEnumerable<Sandwich> package)
+        {
+            foreach (var sandwich in package)
+            {
+                _storage.Put(sandwich);
+            }
+        }
+
+        private static PackingSummary ComputeReport(IEnumerable<Sandwich> package, string deliver)
+        {
+            var summaryPositions = package
+                .GroupBy(
+                    p => p.Kind,
+                    (kind, sandwiches) => new LineSummary(kind, sandwiches.Count()))
+                .ToArray();
+
+            var summary = new PackingSummary(summaryPositions, deliver);
+            return summary;
         }
     }
 }
