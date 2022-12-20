@@ -1,6 +1,4 @@
 using System;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using LevelUpCSharp.Products;
 using LevelUpCSharp.Retail;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
