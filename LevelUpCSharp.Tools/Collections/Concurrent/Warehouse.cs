@@ -7,7 +7,7 @@ namespace LevelUpCSharp.Collections.Concurrent
 {
     public class Warehouse<T> : IWarehouse<T>, IEnumerable<T>
     {
-        private readonly List<T> _memory = new List<T>();
+        private readonly LevelUpCSharp.Collections.Warehouse<T> _memory;
 
         public Warehouse()
         {
@@ -16,14 +16,14 @@ namespace LevelUpCSharp.Collections.Concurrent
 
         public Warehouse(IEnumerable<T> items)
         {
-            _memory = new List<T>(items);
+            _memory = new LevelUpCSharp.Collections.Warehouse<T>(items);
         }
 
         public void Add(IEnumerable<T> sandwiches)
         {
             lock (_memory)
             {
-                _memory.AddRange(sandwiches);
+                _memory.Add(sandwiches);
             }
         }
 
@@ -31,20 +31,19 @@ namespace LevelUpCSharp.Collections.Concurrent
         {
             lock (_memory)
             {
-                T item = _memory[0];
-                _memory.RemoveAt(0);
-                return item;
+                return _memory.Peak();
             }
         }
 
-        IEnumerator<T> IEnumerable<T>.GetEnumerator()
+        public IEnumerator<T> GetEnumerator()
         {
             lock (_memory)
             {
                 return _memory.GetEnumerator();
-            }        }
+            }
+        }
 
-        public IEnumerator GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
@@ -61,22 +60,7 @@ namespace LevelUpCSharp.Collections.Concurrent
         {
             lock (_memory)
             {
-                if (_memory.Count == 0)
-                {
-                    return Array.Empty<T>();
-                }
-
-                if (_memory.Count < upTo)
-                {
-
-                    var result = _memory.ToArray();
-                    _memory.Clear();
-                    return result;
-                }
-
-                var subset = _memory.Take(upTo);
-                _memory.RemoveRange(0, upTo);
-                return subset;
+                return _memory.PeakRange(upTo);
             }
         }
     }

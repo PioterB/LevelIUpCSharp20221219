@@ -9,6 +9,16 @@ namespace LevelUpCSharp.Collections
     {
         private readonly List<T> _memory = new List<T>();
 
+        public Warehouse()
+        {
+            
+        }
+
+        public Warehouse(IEnumerable<T> items)
+        {
+            _memory = new List<T>(items);
+        }
+
         public void Add(IEnumerable<T> sandwiches)
         {
             _memory.AddRange(sandwiches);
@@ -21,12 +31,12 @@ namespace LevelUpCSharp.Collections
             return item;
         }
 
-        IEnumerator<T> IEnumerable<T>.GetEnumerator()
+        public IEnumerator<T> GetEnumerator()
         {
-                return _memory.GetEnumerator();
+            return _memory.GetEnumerator();
         }
 
-        public IEnumerator GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
@@ -51,7 +61,9 @@ namespace LevelUpCSharp.Collections
                 return result;
             }
 
-            return _memory.Take(upTo);
+            var subset = _memory.Take(upTo);
+            _memory.RemoveRange(0, upTo);
+            return subset;
         }
     }
 }

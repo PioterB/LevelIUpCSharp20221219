@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using LevelUpCSharp.Collections.Concurrent;
 using LevelUpCSharp.Consumption;
 using LevelUpCSharp.Persistence;
 using LevelUpCSharp.Production;

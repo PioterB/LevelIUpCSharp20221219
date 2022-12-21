@@ -1,4 +1,4 @@
-﻿using LevelUpCSharp.Persistence;
+﻿using LevelUpCSharp.Collections.Concurrent;
 using LevelUpCSharp.Products;
 
 namespace LevelUpCSharp.Production

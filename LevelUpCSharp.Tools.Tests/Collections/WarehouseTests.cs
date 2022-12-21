@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace LevelUpCSharp.Collections.Concurrent
+namespace LevelUpCSharp.Collections
 {
     [TestClass]
     public class WarehouseTests
