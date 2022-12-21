@@ -1,34 +1,21 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
+using System.Linq;
 using System.Threading;
-using LevelUpCSharp.Helpers;
+using LevelUpCSharp.Production.Ingredients;
 using LevelUpCSharp.Products;
 
 namespace LevelUpCSharp.Production
 {
     public class Vendor
     {
-        private static readonly Random Rand;
+        private readonly List<Sandwich> _warehouse = new List<Sandwich>();
 
-        private readonly IWarehouse<Sandwich> _warehouse;
-
-        private readonly Thread _worker;
-
-        static Vendor()
-        {
-            Rand = new Random((int)DateTime.Now.Ticks);
-        }
-
-        public Vendor(string name, IWarehouse<Sandwich> warehouse)
+        public Vendor(string name)
         {
             Name = name;
-            _warehouse = warehouse;
-            _worker = new Thread(DoProduction) { IsBackground = true };
-            _worker.Start();
         }
 
         public event Action<Sandwich[]> Produced;
@@ -37,7 +24,26 @@ namespace LevelUpCSharp.Production
 
         public IEnumerable<Sandwich> Buy(int howMuch = 0)
         {
-            var toSell = _warehouse.PeakRange(howMuch);
+            if (_warehouse.Count == 0)
+            {
+                return Array.Empty<Sandwich>();
+            }
+
+            if (howMuch == 0 || _warehouse.Count <= howMuch)
+            {
+                var result = _warehouse.ToArray();
+                _warehouse.Clear();
+                return result;
+            }
+
+            var toSell = new List<Sandwich>();
+            for (int i = 0; i < howMuch; i++)
+            {
+                var first = _warehouse[0];
+                toSell.Add(first);
+                _warehouse.Remove(first);
+            }
+
             return toSell;
         }
 
@@ -46,11 +52,9 @@ namespace LevelUpCSharp.Production
             var sandwiches = new List<Sandwich>();
             for (int i = 0; i < count; i++)
             {
-                var produced = Produce(kind);
-                sandwiches.Add(produced);
+                sandwiches.Add(Produce(kind));
             }
-
-            _warehouse.Add(sandwiches);
+            _warehouse.AddRange(sandwiches);
             Produced?.Invoke(sandwiches.ToArray());
         }
 
@@ -64,7 +68,7 @@ namespace LevelUpCSharp.Production
                 {SandwichKind.Pork, 0},
             };
 
-            foreach (Sandwich sandwich in _warehouse)
+            foreach (var sandwich in _warehouse)
             {
                 counts[sandwich.Kind] += 1;
             }
@@ -92,28 +96,17 @@ namespace LevelUpCSharp.Production
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
         }
-
-        private void DoProduction(object obj)
-        {
-            SandwichKind[] sandwichKinds = EnumHelper.GetValues<SandwichKind>();
-
-            while (true)
-            {
-                var kind = Rand.Next(1, sandwichKinds.Length);
-
-                var sandwich = Produce((SandwichKind)kind);
-
-                _warehouse.Add(sandwich);
-
-                Produced?.Invoke(new[] { sandwich });
-
-                Thread.Sleep(5 * 1000);
-            }
-        }
-
+        
         private Sandwich ProduceSandwich(SandwichKind kind, DateTimeOffset addMinutes)
         {
-            return new Sandwich(kind, addMinutes);
+            return SandwichArtist
+                .WithButter(true)
+                .Use(new Beef())
+                .AddVeg(new Cheese())
+                .AddVeg(new Cheese())
+                .AddVeg(new Olives())
+                .AddTopping(new GarlicSos())
+                .Wrap();
         }
     }
 }
