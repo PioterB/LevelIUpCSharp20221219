@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using LevelUpCSharp.Collections;
@@ -12,6 +13,7 @@ namespace LevelUpCSharp.Production
         private static readonly Random Rand;
 
         private readonly IWarehouse<Sandwich> _warehouse;
+        private readonly ConcurrentQueue<ProductionOrder> _workload;
 
         private readonly Thread _worker;
 
@@ -24,6 +26,7 @@ namespace LevelUpCSharp.Production
         {
             Name = name;
             _warehouse = warehouse;
+            _workload = new ConcurrentQueue<ProductionOrder>();
             _worker = new Thread(DoProduction) { IsBackground = true };
             _worker.Start();
         }
@@ -40,15 +43,8 @@ namespace LevelUpCSharp.Production
 
         public void Order(SandwichKind kind, int count)
         {
-            var sandwiches = new List<Sandwich>();
-            for (int i = 0; i < count; i++)
-            {
-                var produced = Produce(kind);
-                sandwiches.Add(produced);
-            }
-
-            _warehouse.Add(sandwiches);
-            Produced?.Invoke(sandwiches.ToArray());
+            var order = new ProductionOrder(kind, count);
+            _workload.Enqueue(order);
         }
 
         public IEnumerable<StockItem> GetStock()
@@ -96,13 +92,21 @@ namespace LevelUpCSharp.Production
 
             while (true)
             {
-                var kind = Rand.Next(1, sandwichKinds.Length);
+                var wasOrder = _workload.TryDequeue(out ProductionOrder order);
+                if (!wasOrder)
+                {
+                    var kind = Rand.Next(1, sandwichKinds.Length);
+                    order = new ProductionOrder((SandwichKind)kind, 1);
+                }
+                
+                for (int i = 0; i < order.Count; i++)
+                {
+                    var sandwich = Produce(order.Kind);
 
-                var sandwich = Produce((SandwichKind)kind);
+                    _warehouse.Add(sandwich);
 
-                _warehouse.Add(sandwich);
-
-                Produced?.Invoke(new[] { sandwich });
+                    Produced?.Invoke(new[] { sandwich });
+                }
 
                 Thread.Sleep(5 * 1000);
             }
