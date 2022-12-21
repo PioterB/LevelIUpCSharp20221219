@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using LevelUpCSharp.Collections;
 using LevelUpCSharp.Helpers;
@@ -10,6 +11,7 @@ namespace LevelUpCSharp.Production
 {
     public class Vendor
     {
+        private readonly IEmployee _employee;
         private static readonly Random Rand;
 
         private readonly IWarehouse<Sandwich> _warehouse;
@@ -22,9 +24,20 @@ namespace LevelUpCSharp.Production
             Rand = new Random((int)DateTime.Now.Ticks);
         }
 
+        public Vendor(string name)
+            : this(name, new LevelUpCSharp.Collections.Concurrent.Warehouse<Sandwich>(), new SandwichMaster())
+        {
+        }
+
         public Vendor(string name, IWarehouse<Sandwich> warehouse)
+            : this(name, warehouse, new SandwichMaster())
+        {
+        }
+
+        public Vendor(string name, IWarehouse<Sandwich> warehouse, IEmployee employee)
         {
             Name = name;
+            _employee = employee;
             _warehouse = warehouse;
             _workload = new ConcurrentQueue<ProductionOrder>();
             _worker = new Thread(DoProduction) { IsBackground = true };
@@ -74,18 +87,6 @@ namespace LevelUpCSharp.Production
             return result;
         }
 
-        private Sandwich Produce(SandwichKind kind)
-        {
-            return kind switch
-            {
-                SandwichKind.Beef => ProduceSandwich(kind, DateTimeOffset.Now.AddMinutes(3)),
-                SandwichKind.Cheese => ProduceSandwich(kind, DateTimeOffset.Now.AddSeconds(90)),
-                SandwichKind.Chicken => ProduceSandwich(kind, DateTimeOffset.Now.AddMinutes(4)),
-                SandwichKind.Pork => ProduceSandwich(kind, DateTimeOffset.Now.AddSeconds(150)),
-                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
-            };
-        }
-
         private void DoProduction(object obj)
         {
             SandwichKind[] sandwichKinds = EnumHelper.GetValues<SandwichKind>();
@@ -98,23 +99,13 @@ namespace LevelUpCSharp.Production
                     var kind = Rand.Next(1, sandwichKinds.Length);
                     order = new ProductionOrder((SandwichKind)kind, 1);
                 }
+
+                var sandwiches = _employee.Work(order);
                 
-                for (int i = 0; i < order.Count; i++)
-                {
-                    var sandwich = Produce(order.Kind);
-
-                    _warehouse.Add(sandwich);
-
-                    Produced?.Invoke(new[] { sandwich });
-                }
+                Produced?.Invoke(sandwiches.ToArray());
 
                 Thread.Sleep(5 * 1000);
             }
-        }
-
-        private Sandwich ProduceSandwich(SandwichKind kind, DateTimeOffset addMinutes)
-        {
-            return new Sandwich(kind, addMinutes);
         }
     }
 }
