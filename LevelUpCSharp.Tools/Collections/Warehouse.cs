@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace LevelUpCSharp.Collections
 {
-    internal class Warehouse<T> : IWarehouse<T>, IEnumerable<T>
+    public class Warehouse<T> : IWarehouse<T>, IEnumerable<T>
     {
         private readonly List<T> _memory = new List<T>();
 

@@ -5,9 +5,19 @@ using System.Linq;
 
 namespace LevelUpCSharp.Collections.Concurrent
 {
-    internal class Warehouse<T> : IWarehouse<T>, IEnumerable<T>
+    public class Warehouse<T> : IWarehouse<T>, IEnumerable<T>
     {
         private readonly List<T> _memory = new List<T>();
+
+        public Warehouse()
+        {
+            
+        }
+
+        public Warehouse(IEnumerable<T> items)
+        {
+            _memory = new List<T>(items);
+        }
 
         public void Add(IEnumerable<T> sandwiches)
         {
@@ -64,7 +74,9 @@ namespace LevelUpCSharp.Collections.Concurrent
                     return result;
                 }
 
-                return _memory.Take(upTo);
+                var subset = _memory.Take(upTo);
+                _memory.RemoveRange(0, upTo);
+                return subset;
             }
         }
     }
