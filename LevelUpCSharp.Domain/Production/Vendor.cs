@@ -30,7 +30,7 @@ namespace LevelUpCSharp.Production
         }
 
         public Vendor(string name, IWarehouse<Sandwich> warehouse)
-            : this(name, warehouse, new SandwichMaster())
+            : this(name, warehouse, new SandwichMaster().AsRabbit())
         {
         }
 
@@ -102,9 +102,9 @@ namespace LevelUpCSharp.Production
 
                 var sandwiches = _employee.Work(order);
                 
-                Produced?.Invoke(sandwiches.ToArray());
+                _warehouse.Add(sandwiches);
 
-                Thread.Sleep(5 * 1000);
+                Produced?.Invoke(sandwiches.ToArray());
             }
         }
     }

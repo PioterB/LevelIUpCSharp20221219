@@ -35,9 +35,9 @@ namespace LevelUpCSharp
         {
             var repo = new Repository<string, Vendor>();
 
-            repo.Add("Slimak", new Vendor("Slimak", new Warehouse<Sandwich>()));
-            repo.Add("Pan Kanapka", new Vendor("Pan Kanapka", new Warehouse<Sandwich>()));
-            repo.Add("Nowakowski", new Vendor("Nowakowski", new Warehouse<Sandwich>()));
+            repo.Add("Slimak", new Vendor("Slimak", new Warehouse<Sandwich>(), new SlowMotion(new SandwichMaster())));
+            repo.Add("Pan Kanapka", new Vendor("Pan Kanapka", new Warehouse<Sandwich>(), new Rabbit(new SandwichMaster())));
+            repo.Add("Nowakowski", new Vendor("Nowakowski", new Warehouse<Sandwich>(), new GenericTempo(new SandwichMaster(), 15)));
 
             return repo;
         }

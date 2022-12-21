@@ -12,7 +12,7 @@ namespace LevelUpCSharp.Production
                 return Result<Vendor>.Failed();
             }
 
-            var vendor = new Vendor(name, new Warehouse<Sandwich>());
+            var vendor = new Vendor(name, new Warehouse<Sandwich>(), new SlowMotion(new SandwichMaster()));
 
             Repositories.Vendors.Add(vendor.Name, vendor);
 
