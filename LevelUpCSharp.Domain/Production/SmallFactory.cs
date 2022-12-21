@@ -9,7 +9,7 @@ using LevelUpCSharp.Products;
 
 namespace LevelUpCSharp.Production
 {
-    public class Vendor
+    public class SmallFactory
     {
         private readonly IEmployee _employee;
         private static readonly Random Rand;
@@ -20,22 +20,22 @@ namespace LevelUpCSharp.Production
         private readonly Thread _worker;
         private readonly CancellationTokenSource _cancel;
 
-        static Vendor()
+        static SmallFactory()
         {
             Rand = new Random((int)DateTime.Now.Ticks);
         }
 
-        public Vendor(string name)
+        public SmallFactory(string name)
             : this(name, new LevelUpCSharp.Collections.Concurrent.Warehouse<Sandwich>(), new SandwichMaster())
         {
         }
 
-        public Vendor(string name, IWarehouse<Sandwich> warehouse)
+        public SmallFactory(string name, IWarehouse<Sandwich> warehouse)
             : this(name, warehouse, new SandwichMaster().AsRabbit())
         {
         }
 
-        public Vendor(string name, IWarehouse<Sandwich> warehouse, IEmployee employee)
+        public SmallFactory(string name, IWarehouse<Sandwich> warehouse, IEmployee employee)
         {
             Name = name;
             _employee = employee;
@@ -50,16 +50,16 @@ namespace LevelUpCSharp.Production
 
         public string Name { get; }
 
-        public IEnumerable<Sandwich> Buy(int howMuch = 0)
-        {
-            var toSell = _warehouse.PeakRange(howMuch);
-            return toSell;
-        }
-
         public void Shutdown()
         {
             _cancel.Cancel();
             _worker.Join();
+        }
+
+        public IEnumerable<Sandwich> Buy(int howMuch = 0)
+        {
+            var toSell = _warehouse.PeakRange(howMuch);
+            return toSell;
         }
 
         public void Order(SandwichKind kind, int count)
@@ -105,14 +105,20 @@ namespace LevelUpCSharp.Production
                 if (!wasOrder)
                 {
                     var kind = Rand.Next(1, sandwichKinds.Length);
-                    order = new ProductionOrder((SandwichKind)kind, 1);
+                    order = new ProductionOrder((SandwichKind)kind, 10);
                 }
 
-                var sandwiches = _employee.Work(order);
-                
-                _warehouse.Add(sandwiches);
+                for (int i = 0; i < order.Count; i++)
+                {
+                    ThreadPool.QueueUserWorkItem(_ =>
+                    {
+                        var sandwiches = _employee.Work(new ProductionOrder(order.Kind, 1));
 
-                Produced?.Invoke(sandwiches.ToArray());
+                        _warehouse.Add(sandwiches);
+
+                        Produced?.Invoke(sandwiches.ToArray());
+                    });
+                }
             }
         }
     }

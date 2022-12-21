@@ -39,7 +39,7 @@ namespace LevelUpCSharp.Collections.Concurrent
         {
             lock (_memory)
             {
-                return _memory.GetEnumerator();
+                return _memory.ToList().GetEnumerator();
             }
         }
 

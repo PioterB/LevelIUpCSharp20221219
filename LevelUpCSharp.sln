@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LevelUpCSharp.Tools.Tests",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LevelUpCSharp.Tools.PerformanceTests", "LevelUpCSharp.Tools.PerformanceTests\LevelUpCSharp.Tools.PerformanceTests.csproj", "{D472F87A-B3D1-4DEE-8287-D69FF09A401A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LevelUpCSharp.Domain.PerformanceTests", "LevelUpCSharp.Domain.PerformanceTests\LevelUpCSharp.Domain.PerformanceTests.csproj", "{3DC345CC-6F63-484A-9AE4-C4BACAD6D02A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,10 @@ Global
 		{D472F87A-B3D1-4DEE-8287-D69FF09A401A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D472F87A-B3D1-4DEE-8287-D69FF09A401A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D472F87A-B3D1-4DEE-8287-D69FF09A401A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3DC345CC-6F63-484A-9AE4-C4BACAD6D02A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DC345CC-6F63-484A-9AE4-C4BACAD6D02A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DC345CC-6F63-484A-9AE4-C4BACAD6D02A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DC345CC-6F63-484A-9AE4-C4BACAD6D02A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -67,6 +73,7 @@ Global
 		{4E457D80-58DF-49C9-8E23-725E76AA13E0} = {AEADA789-2BD4-4AA6-A71A-FB65FE021559}
 		{E7940A19-7A98-4A26-AE1B-343F7183C069} = {AEADA789-2BD4-4AA6-A71A-FB65FE021559}
 		{D472F87A-B3D1-4DEE-8287-D69FF09A401A} = {AEADA789-2BD4-4AA6-A71A-FB65FE021559}
+		{3DC345CC-6F63-484A-9AE4-C4BACAD6D02A} = {AEADA789-2BD4-4AA6-A71A-FB65FE021559}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F0C311C5-778C-4F4C-A768-5897E04B964D}
