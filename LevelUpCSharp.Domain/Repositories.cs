@@ -2,6 +2,7 @@
 using LevelUpCSharp.Consumption;
 using LevelUpCSharp.Persistence;
 using LevelUpCSharp.Production;
+using LevelUpCSharp.Products;
 
 namespace LevelUpCSharp
 {
@@ -33,9 +34,9 @@ namespace LevelUpCSharp
         {
             var repo = new Repository<string, Vendor>();
 
-            repo.Add("Slimak", new Vendor("Slimak"));
-            repo.Add("Pan Kanapka", new Vendor("Pan Kanapka"));
-            repo.Add("Nowakowski", new Vendor("Nowakowski"));
+            repo.Add("Slimak", new Vendor("Slimak", new Warehouse<Sandwich>()));
+            repo.Add("Pan Kanapka", new Vendor("Pan Kanapka", new Warehouse<Sandwich>()));
+            repo.Add("Nowakowski", new Vendor("Nowakowski", new Warehouse<Sandwich>()));
 
             return repo;
         }

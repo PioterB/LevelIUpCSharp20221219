@@ -51,12 +51,10 @@ namespace LevelUpCSharp.Production
 		/// <returns></returns>
 		public Sandwich Wrap()
 		{
-			var expDate = _ingredients.Min(i => i.ExpDate);
-
 			var ingredients = _ingredients.AsStrings().ToArray();
 			return new Sandwich(
 				_keyIngredient.Kind,
-				expDate,
+				DateTimeOffset.Now.AddDays(3),
 				ingredients);
 		}
 	}

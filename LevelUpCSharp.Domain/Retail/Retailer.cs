@@ -36,6 +36,7 @@ namespace LevelUpCSharp.Retail
 
         public void Pack(IEnumerable<Sandwich> package, string deliver)
         {
+            package.First(Pan.Big);
             package = package.ToArray();
 
             _shelf.Put(package);
@@ -64,6 +65,14 @@ namespace LevelUpCSharp.Retail
 
             var summary = new PackingSummary(summaryPositions, deliver);
             return summary;
+        }
+    }
+
+    public static class Pan
+    {
+        public static bool Big(Sandwich arg)
+        {
+            throw new NotImplementedException();
         }
     }
 }
