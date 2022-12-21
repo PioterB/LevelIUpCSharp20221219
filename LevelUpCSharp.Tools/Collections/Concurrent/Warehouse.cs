@@ -11,7 +11,7 @@ namespace LevelUpCSharp.Collections.Concurrent
 
         public Warehouse()
         {
-            
+            _memory = new Collections.Warehouse<T>();
         }
 
         public Warehouse(IEnumerable<T> items)
