@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace LevelUpCSharp.Production
+namespace LevelUpCSharp.Collections.Concurrent
 {
     internal class Warehouse<T> : IWarehouse<T>, IEnumerable<T>
     {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace LevelUpCSharp.Production
+namespace LevelUpCSharp.Collections
 {
     public interface IWarehouse<T> : IEnumerable<T>
     {
