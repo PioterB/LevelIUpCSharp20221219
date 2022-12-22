@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using LevelUpCSharp.Products;
 
 namespace LevelUpCSharp.Production
 {
     public class SandwichMaster : IEmployee
     {
-        public IEnumerable<Sandwich> Work(ProductionOrder order)
+        public async Task<IEnumerable<Sandwich>> Work(ProductionOrder order)
         {
             var result = new List<Sandwich>(order.Count);
             for (int i = 0; i < order.Count; i++)
@@ -15,7 +16,7 @@ namespace LevelUpCSharp.Production
                 result.Add(sandwich);
             }
 
-            return result;
+            return await Task.FromResult(result);
         }
 
         private Sandwich Produce(SandwichKind kind)

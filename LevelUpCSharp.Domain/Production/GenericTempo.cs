@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using LevelUpCSharp.Products;
 
 namespace LevelUpCSharp.Production
@@ -15,7 +16,7 @@ namespace LevelUpCSharp.Production
             _speed = speed;
         }
 
-        public IEnumerable<Sandwich> Work(ProductionOrder order)
+        public Task<IEnumerable<Sandwich>> Work(ProductionOrder order)
         {
             var result =  _inner.Work(order);
             Thread.Sleep(_speed * 1000);

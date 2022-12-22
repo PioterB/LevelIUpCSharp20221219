@@ -114,9 +114,9 @@ namespace LevelUpCSharp.Production
                     {
                         var sandwiches = _employee.Work(new ProductionOrder(order.Kind, 1));
 
-                        _warehouse.Add(sandwiches);
+                        _warehouse.Add(sandwiches.Result);
 
-                        Produced?.Invoke(sandwiches.ToArray());
+                        Produced?.Invoke(sandwiches.Result.ToArray());
                     });
                 }
             }

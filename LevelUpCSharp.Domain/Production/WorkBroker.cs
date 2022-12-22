@@ -15,9 +15,9 @@ namespace LevelUpCSharp.Production
             _worker = worker;
         }
 
-        public IEnumerable<Sandwich> Work(ProductionOrder order)
+        public async Task<IEnumerable<Sandwich>> Work(ProductionOrder order)
         {
-            return Enumerable.Range(0, order.Count).AsParallel().SelectMany(index => _worker.Work(new ProductionOrder(order.Kind, 1))).ToArray();
+            throw new NotImplementedException();
         }
     }
 }

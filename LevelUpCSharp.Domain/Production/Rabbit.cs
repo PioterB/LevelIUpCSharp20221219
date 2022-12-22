@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using LevelUpCSharp.Products;
 
 namespace LevelUpCSharp.Production
@@ -13,10 +14,10 @@ namespace LevelUpCSharp.Production
             _inner = inner;
         }
 
-        public IEnumerable<Sandwich> Work(ProductionOrder order)
+        public async Task<IEnumerable<Sandwich>> Work(ProductionOrder order)
         {
-            Thread.Sleep(1 * 1000);
-            return _inner.Work(order);
+            await Task.Delay(1 * 1000);
+            return await _inner.Work(order);
         }
     }
 }

@@ -95,7 +95,7 @@ namespace LevelUpCSharp.Production
             return result;
         }
 
-        private void DoProduction(object obj)
+        private async void DoProduction(object obj)
         {
             SandwichKind[] sandwichKinds = EnumHelper.GetValues<SandwichKind>();
             var token = _cancel.Token;
@@ -108,7 +108,7 @@ namespace LevelUpCSharp.Production
                     order = new ProductionOrder((SandwichKind)kind, 1);
                 }
 
-                var sandwiches = _employee.Work(order);
+                var sandwiches = await _employee.Work(order);
                 
                 _warehouse.Add(sandwiches);
 
