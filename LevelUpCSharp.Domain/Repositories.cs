@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data;
 using LevelUpCSharp.Collections.Concurrent;
 using LevelUpCSharp.Consumption;
 using LevelUpCSharp.Persistence;
@@ -35,9 +36,11 @@ namespace LevelUpCSharp
         {
             var repo = new Repository<string, Vendor>();
 
-            repo.Add("Slimak", new Vendor("Slimak", new Warehouse<Sandwich>(), new SlowMotion(new SandwichMaster())));
-            repo.Add("Pan Kanapka", new Vendor("Pan Kanapka", new Warehouse<Sandwich>(), new Rabbit(new SandwichMaster())));
-            repo.Add("Nowakowski", new Vendor("Nowakowski", new Warehouse<Sandwich>(), new GenericTempo(new SandwichMaster(), 15)));
+            var middleware = new JobCenter("Village");
+            var employee = middleware.Hire();
+            repo.Add("Slimak", new Vendor("Slimak", new Warehouse<Sandwich>(), employee));
+            repo.Add("Pan Kanapka", new Vendor("Pan Kanapka", new Warehouse<Sandwich>(), employee));
+            repo.Add("Nowakowski", new Vendor("Nowakowski", new Warehouse<Sandwich>(), employee));
 
             return repo;
         }

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using LevelUpCSharp.Collections;
 using LevelUpCSharp.Products;
 
 namespace LevelUpCSharp.Production

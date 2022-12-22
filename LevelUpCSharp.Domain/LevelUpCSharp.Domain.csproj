@@ -6,7 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\LevelUpCSharp.Employees.SDK\LevelUpCSharp.Employees.SDK.csproj" />
     <ProjectReference Include="..\LevelUpCSharp.Tools\LevelUpCSharp.Tools.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Products\" />
   </ItemGroup>
 
 </Project>
