@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using LevelUpCSharp.Storage.Safe;
 
 namespace LevelUpCSharp
@@ -11,17 +12,13 @@ namespace LevelUpCSharp
 
         static void Main(string[] args)
         {
-            var courier = new Thread(Pickup) { IsBackground = true };
-            var sender = new Thread(Insert) { IsBackground = true };
-            var vault = new Vault<int>();
-
-            courier.Start(vault);
-            sender.Start(vault);
+            var worker = new Task(Pipeline, TaskCreationOptions.LongRunning);
+            worker.Start();
 
             Console.ReadKey(true);
             Console.WriteLine("Closing...");
-            //_close = true;
-
+            _close = true;
+            worker.Wait();
             Console.WriteLine("Closed");
         }
 
@@ -55,6 +52,48 @@ namespace LevelUpCSharp
                 Console.WriteLine("[Pickup] get:" + found);
                 Thread.Sleep(7 * 1000);
             }
+        }
+
+        private static void Pipeline()
+        {
+            while (!_close)
+            {
+                var producent = Task.Run(() => GetNumber());
+
+                /*
+                 * logic next to production
+                 */
+
+                var number = producent.Result;
+
+                Task.Run(() => ConsumNumber(number)).Wait(); 
+            }
+        }
+
+        private static void PipelineV2()
+        {
+            while (!_close)
+            {
+                Task.Run(() => GetNumber())
+                    .ContinueWith(prev => ConsumNumber(prev.Result))
+                    .Wait();
+            }
+        }
+
+        private static void ConsumNumber(int number)
+        {
+            Thread.Sleep(7 * 1000);
+
+            Console.WriteLine("[Pickup] get:" + number);
+        }
+
+        private static int GetNumber()
+        {
+            Thread.Sleep(3 * 1000);
+
+            var found = _r.Next(100);
+            Console.WriteLine("[Insert] i have: " + found);
+            return found;
         }
     }
 }
