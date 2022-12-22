@@ -20,7 +20,7 @@ namespace LevelUpCSharp.Domain.PerformanceTests
         public void Jdg()
         {
             var vendor = new Vendor("jdg", new Warehouse<Sandwich>(), new SandwichMaster());
-            Thread.Sleep(10*1000);
+            Thread.Sleep(5*1000);
             vendor.Shutdown();
             Assert.AreEqual(1, vendor.GetStock().Sum(x => x.Count));
         }
@@ -29,7 +29,7 @@ namespace LevelUpCSharp.Domain.PerformanceTests
         public void SmallFactory()
         {
             var vendor = new SmallFactory("SmallFactory", new Warehouse<Sandwich>(), new SandwichMaster());
-            Thread.Sleep(10 * 1000);
+            Thread.Sleep(5 * 1000);
             vendor.Shutdown();
             Assert.AreEqual(1, vendor.GetStock().Sum(x => x.Count));
         }
